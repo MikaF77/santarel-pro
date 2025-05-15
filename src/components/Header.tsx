@@ -129,8 +129,8 @@ export default function Header() {
           <div>
             <span className="block font-semibold">VOS OUTILS</span>
             <div className="pl-4 space-y-1">
-              <Link href="/activite" onClick={() => setMobileMenuOpen(false)} className="block hover:underline">Tableau de bord</Link>
               <Link href="/formation" onClick={() => setMobileMenuOpen(false)} className="block hover:underline">Webinaires / Formations</Link>
+              <Link href="/ingredients" onClick={() => setMobileMenuOpen(false)} className="block hover:underline">Index des ingrédients</Link>
             </div>
           </div>
 
@@ -139,7 +139,8 @@ export default function Header() {
             <span className="block font-semibold">SUIVI CONSULTANTS</span>
             <div className="pl-4 space-y-1">
               <Link href="/patients" onClick={() => setMobileMenuOpen(false)} className="block hover:underline">Mes consultants</Link>
-              <Link href="/patients/activite" onClick={() => setMobileMenuOpen(false)} className="block hover:underline">Mon activité</Link>
+              <Link href="/activite" onClick={() => setMobileMenuOpen(false)} className="block hover:underline">Mon activité</Link>
+              <Link href="/recommandation" onClick={() => setMobileMenuOpen(false)} className="block hover:underline">Faire une recommandation</Link>
             </div>
           </div>
 
@@ -164,6 +165,7 @@ export default function Header() {
             {dropdownToolsOpen && (
               <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 bg-white border rounded shadow z-50 text-left">
                 <Link href="/formation" onClick={() => setDropdownToolsOpen(false)} className="block px-4 py-2 text-sm text-[#794082] hover:bg-gray-100">Webinaires / Formations</Link>
+                <Link href="/ingredients" onClick={() => setDropdownToolsOpen(false)} className="block px-4 py-2 text-sm text-[#794082] hover:bg-gray-100">Index des ingrédients</Link>
               </div>
             )}
           </div>
@@ -180,6 +182,7 @@ export default function Header() {
               <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-52 bg-white border rounded shadow z-50 text-left">
                 <Link href="/patients" onClick={() => setDropdownConsultantsOpen(false)} className="block px-4 py-2 text-sm text-[#794082] hover:bg-gray-100">Mes consultants</Link>
                 <Link href="/activite" onClick={() => setDropdownConsultantsOpen(false)} className="block px-4 py-2 text-sm text-[#794082] hover:bg-gray-100">Mon activité</Link>
+                <Link href="/recommandation" onClick={() => setDropdownToolsOpen(false)} className="block px-4 py-2 text-sm text-[#794082] hover:bg-gray-100">Faire une recommandation</Link>
               </div>
             )}
           </div>
