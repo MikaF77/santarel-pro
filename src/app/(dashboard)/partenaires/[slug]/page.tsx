@@ -3,14 +3,6 @@
 import { notFound } from 'next/navigation';
 import PartenaireProductPage from '@/components/PartenaireProductPage';
 
-export async function generateStaticParams() {
-  return [
-    { slug: 'elixir' },
-    { slug: 'cc-cream' }
-    // ajoute ici tes autres produits
-  ];
-}
-
 const produits = [
   {
     slug: 'elixir',
@@ -23,7 +15,7 @@ const produits = [
       'Effet régénérant & repulpant',
       'Teint sublimé et éclatant',
     ],
-    ingredients: `Helianthus Annuus Seed Oil*, Coco-Caprylate, Prunus Amygdalus Dulcis Oil*, Cucurbita Maxima Extract*, Tocopherol, Citrus Reticulata Peel Oil*...`,
+    ingredients: `Helianthus Annuus Seed Oil*, Coco-Caprylate, Prunus Amygdalus Dulcis Oil*, Cucurbita Maxima Extract*, Tocopherol, Citrus Reticulata Peel Oil*...`
   },
   {
     slug: 'cc-cream',
@@ -40,6 +32,12 @@ const produits = [
   },
 ];
 
+// ✅ Génère les pages statiques au build
+export async function generateStaticParams() {
+  return produits.map((p) => ({ slug: p.slug }));
+}
+
+// ✅ Page dynamique, sans typage explicite
 export default function Page({ params }: { params: { slug: string } }) {
   const produit = produits.find((p) => p.slug === params.slug);
   if (!produit) return notFound();
