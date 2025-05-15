@@ -4,6 +4,10 @@ import { useState } from 'react';
 import { Auth } from 'aws-amplify';
 import { useRouter } from 'next/navigation';
 
+type CognitoChallengeUser = {
+  challengeName?: string;
+};
+
 export default function ForcePasswordPage() {
   const router = useRouter();
 
@@ -23,7 +27,7 @@ export default function ForcePasswordPage() {
     try {
       const user = await Auth.signIn(email, password);
 
-      if ((user as any).challengeName === 'NEW_PASSWORD_REQUIRED') {
+      if ((user as CognitoChallengeUser).challengeName === 'NEW_PASSWORD_REQUIRED') {
         setCognitoUser(user);
         setStep('new-password');
       } else {

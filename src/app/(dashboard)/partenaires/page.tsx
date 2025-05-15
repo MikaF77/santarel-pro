@@ -13,18 +13,17 @@ export default function PartenairesPage() {
       </p>
 
       {/* Navigation par logos partenaires */}
-<div className="flex flex-wrap justify-center gap-8 mb-10">
-  <a href="#pumpskin" className="flex items-center hover:opacity-80 transition">
-    <Image src="/partenaires/pumpskin-logo.png" alt="Pump'Skin" width={120} height={40} />
-  </a>
-  <a href="#lbe" className="flex items-center hover:opacity-80 transition">
-    <Image src="/partenaires/lbe-logo.png" alt="LBE" width={120} height={40} />
-  </a>
-  <a href="#quintessence" className="flex items-center hover:opacity-80 transition">
-    <Image src="/partenaires/quintessence-logo.png" alt="Quintessence" width={120} height={40} />
-  </a>
-</div>
-
+      <div className="flex flex-wrap justify-center gap-8 mb-10">
+        <a href="#pumpskin" className="flex items-center hover:opacity-80 transition">
+          <Image src="/partenaires/pumpskin-logo.png" alt="Pump&#39;Skin" width={120} height={40} />
+        </a>
+        <a href="#lbe" className="flex items-center hover:opacity-80 transition">
+          <Image src="/partenaires/lbe-logo.png" alt="LBE" width={120} height={40} />
+        </a>
+        <a href="#quintessence" className="flex items-center hover:opacity-80 transition">
+          <Image src="/partenaires/quintessence-logo.png" alt="Quintessence" width={120} height={40} />
+        </a>
+      </div>
 
       {/* PUMP’SKIN */}
       <section id="pumpskin" className="mb-12">
@@ -41,7 +40,7 @@ export default function PartenairesPage() {
           </div>
           <div className="text-sm text-gray-700 space-y-4">
             <p>
-              Née de la collaboration entre <strong>Dr Dominique Eraud</strong> et <strong>Dr Philippe Desbrosses</strong>, la gamme Pump'Skin repose sur les bienfaits du potimarron : riche en antioxydants, caroténoïdes, vitamines et oligo-éléments.
+              Née de la collaboration entre <strong>Dr Dominique Eraud</strong> et <strong>Dr Philippe Desbrosses</strong>, la gamme Pump&#39;Skin repose sur les bienfaits du potimarron : riche en antioxydants, caroténoïdes, vitamines et oligo-éléments.
             </p>
             <p>
               Leurs produits offrent des effets régénérants, protecteurs et un pouvoir anti-âge remarquable. Toute la gamme est fabriquée en France et formulée selon une démarche bio, naturelle et sensorielle.

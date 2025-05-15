@@ -7,10 +7,10 @@ import Image from "next/image";
 
 export default function Home() {
   const router = useRouter();
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     Auth.currentAuthenticatedUser()
@@ -19,50 +19,48 @@ export default function Home() {
   }, [router]);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  setError('');
-  setLoading(true);
+    e.preventDefault();
+    setError('');
+    setLoading(true);
 
-  try {
-    const user = await Auth.signIn(email, password);
+    try {
+      const user = await Auth.signIn(email, password);
 
-    // ✅ Cas particulier Cognito : le mot de passe doit être changé
-    if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
-      // Redirection vers la page de changement forcé
-      router.push('/force-password');
-      return;
+      if ('challengeName' in user && user.challengeName === 'NEW_PASSWORD_REQUIRED') {
+        router.push('/force-password');
+        return;
+      }
+
+      router.push('/dashboard');
+    } catch (err: unknown) {
+      console.error('[Login] ❌', err);
+
+      if (typeof err === 'object' && err !== null && 'name' in err) {
+        const errorName = (err as { name: string; message?: string }).name;
+
+        switch (errorName) {
+          case 'PasswordResetRequiredException':
+            router.push('/force-password');
+            return;
+          case 'UserNotFoundException':
+            setError("Aucun compte trouvé avec cette adresse email.");
+            break;
+          case 'NotAuthorizedException':
+            setError("Mot de passe incorrect.");
+            break;
+          case 'UserNotConfirmedException':
+            setError("Votre compte n'est pas encore confirmé.");
+            break;
+          default:
+            setError("Erreur – " + ((err as Error).message || "Connexion impossible"));
+        }
+      } else {
+        setError("Erreur inconnue.");
+      }
+    } finally {
+      setLoading(false);
     }
-
-    // ✅ Connexion classique
-    router.push('/dashboard');
-  } catch (err: any) {
-    console.error('[Login] ❌', err);
-
-    if (err.name === 'PasswordResetRequiredException') {
-      // 🔁 Cas où Cognito exige un reset
-      router.push('/force-password');
-      return;
-    }
-
-    // Autres erreurs classiques
-    switch (err.name) {
-      case 'UserNotFoundException':
-        setError("Aucun compte trouvé avec cette adresse email.");
-        break;
-      case 'NotAuthorizedException':
-        setError("Mot de passe incorrect.");
-        break;
-      case 'UserNotConfirmedException':
-        setError("Votre compte n'est pas encore confirmé.");
-        break;
-      default:
-        setError("Erreur – " + (err.message || 'Connexion impossible'));
-    }
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   return (
     <main className="min-h-screen bg-white text-gray-800 flex flex-col justify-between font-sans">

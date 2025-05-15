@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import { Auth } from 'aws-amplify';
+import { useRouter } from 'next/navigation';
 
 export default function ResetPasswordPage() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [codeSent, setCodeSent] = useState(false);
   const [code, setCode] = useState('');
@@ -11,7 +13,7 @@ export default function ResetPasswordPage() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
-  const handleSendCode = async (e: React.FormEvent) => {
+  const handleSendCode = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
     setMessage('');
@@ -19,37 +21,47 @@ export default function ResetPasswordPage() {
       await Auth.forgotPassword(email);
       setCodeSent(true);
       setMessage('Un code de vérification vous a été envoyé par e-mail.');
-    } catch (err) {
-      setError((err as any).message || 'Erreur lors de la demande de réinitialisation.');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Erreur lors de la demande de réinitialisation.');
+      }
     }
   };
 
-  const handleConfirm = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setError('');
-  setMessage('');
-  try {
-    // Étape 1 : validation du code et changement de mot de passe
-    await Auth.forgotPasswordSubmit(email, code, newPassword);
-
-    // Étape 2 : connexion automatique
-    await Auth.signIn(email, newPassword);
-
-    // Étape 3 : redirection vers le dashboard
-    router.push('/dashboard');
-  } catch (err) {
-    setError((err as any).message || 'Erreur lors de la réinitialisation du mot de passe.');
-  }
-};
-
+  const handleConfirm = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError('');
+    setMessage('');
+    try {
+      await Auth.forgotPasswordSubmit(email, code, newPassword);
+      await Auth.signIn(email, newPassword);
+      router.push('/dashboard');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Erreur lors de la réinitialisation du mot de passe.');
+      }
+    }
+  };
 
   return (
     <main className="min-h-screen bg-white flex items-center justify-center px-4 py-12">
       <div className="max-w-md w-full bg-[#f8f8f8] border border-gray-200 rounded-xl shadow p-8">
         <h2 className="text-2xl font-bold text-[#794082] mb-6 text-center">Réinitialisation du mot de passe</h2>
 
-        {message && <div className="text-green-700 bg-green-100 border border-green-300 p-3 text-sm mb-4 rounded">{message}</div>}
-        {error && <div className="text-red-600 bg-red-100 border border-red-300 p-3 text-sm mb-4 rounded">{error}</div>}
+        {message && (
+          <div className="text-green-700 bg-green-100 border border-green-300 p-3 text-sm mb-4 rounded">
+            {message}
+          </div>
+        )}
+        {error && (
+          <div className="text-red-600 bg-red-100 border border-red-300 p-3 text-sm mb-4 rounded">
+            {error}
+          </div>
+        )}
 
         {!codeSent ? (
           <form onSubmit={handleSendCode} className="space-y-5">
