@@ -1,5 +1,3 @@
-// src/app/(dashboard)/partenaires/[slug]/page.tsx
-
 import { notFound } from 'next/navigation';
 import PartenaireProductPage from '@/components/PartenaireProductPage';
 
@@ -15,7 +13,7 @@ const produits = [
       'Effet régénérant & repulpant',
       'Teint sublimé et éclatant',
     ],
-    ingredients: `Helianthus Annuus Seed Oil*, Coco-Caprylate, Prunus Amygdalus Dulcis Oil*, Cucurbita Maxima Extract*, Tocopherol, Citrus Reticulata Peel Oil*...`
+    ingredients: `Helianthus Annuus Seed Oil*, Coco-Caprylate, Prunus Amygdalus Dulcis Oil*, Cucurbita Maxima Extract*, Tocopherol, Citrus Reticulata Peel Oil*...`,
   },
   {
     slug: 'cc-cream',
@@ -32,12 +30,11 @@ const produits = [
   },
 ];
 
-// ✅ Génère les pages statiques au build
-export async function generateStaticParams() {
+export function generateStaticParams() {
   return produits.map((p) => ({ slug: p.slug }));
 }
 
-// ✅ Page dynamique, sans typage explicite
+// ❌ PAS de typage personnalisé ici (sinon bug)
 export default function Page({ params }: { params: { slug: string } }) {
   const produit = produits.find((p) => p.slug === params.slug);
   if (!produit) return notFound();
