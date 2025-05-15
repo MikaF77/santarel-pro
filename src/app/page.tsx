@@ -10,6 +10,7 @@ export default function Home() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     Auth.currentAuthenticatedUser()
@@ -18,25 +19,50 @@ export default function Home() {
   }, [router]);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
-    try {
-      await Auth.signOut({ global: true }).catch(() => {});
-      await Auth.signIn(email, password);
-      router.push("/dashboard");
-    } catch (err) {
-      if (typeof err === "object" && err !== null && "name" in err && err.name === "UserAlreadyAuthenticatedException") {
-        router.push("/dashboard");
-      } else {
-        setError((err as { message?: string }).message || "Erreur de connexion");
-      }
-    }
-  };
+  e.preventDefault();
+  setError('');
+  setLoading(true);
 
-  const handleFakeLogin = () => {
-    sessionStorage.setItem("fakeUser", "true");
-    router.push("/dashboard");
-  };
+  try {
+    const user = await Auth.signIn(email, password);
+
+    // ✅ Cas particulier Cognito : le mot de passe doit être changé
+    if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
+      // Redirection vers la page de changement forcé
+      router.push('/force-password');
+      return;
+    }
+
+    // ✅ Connexion classique
+    router.push('/dashboard');
+  } catch (err: any) {
+    console.error('[Login] ❌', err);
+
+    if (err.name === 'PasswordResetRequiredException') {
+      // 🔁 Cas où Cognito exige un reset
+      router.push('/force-password');
+      return;
+    }
+
+    // Autres erreurs classiques
+    switch (err.name) {
+      case 'UserNotFoundException':
+        setError("Aucun compte trouvé avec cette adresse email.");
+        break;
+      case 'NotAuthorizedException':
+        setError("Mot de passe incorrect.");
+        break;
+      case 'UserNotConfirmedException':
+        setError("Votre compte n'est pas encore confirmé.");
+        break;
+      default:
+        setError("Erreur – " + (err.message || 'Connexion impossible'));
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <main className="min-h-screen bg-white text-gray-800 flex flex-col justify-between font-sans">
@@ -69,20 +95,22 @@ export default function Home() {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            {error && <p className="text-red-600 text-sm text-center">{error}</p>}
+            {error && (
+              <div className="text-red-600 bg-red-100 border border-red-300 p-3 text-sm rounded text-center">
+                {error}
+              </div>
+            )}
             <button
               type="submit"
+              disabled={loading}
               className="w-full bg-[#794082] text-white py-3 rounded hover:bg-[#66336e] transition"
             >
-              Se connecter
+              {loading ? 'Connexion…' : 'Se connecter'}
             </button>
-            <button
-              type="button"
-              className="w-full border border-[#794082] text-[#794082] py-3 rounded hover:bg-[#f3f0f4] transition"
-              onClick={handleFakeLogin}
-            >
-              Mode Démo (bypass)
-            </button>
+
+            <a href="/reset-password" className="text-sm text-blue-600 hover:underline text-center block">
+              Mot de passe oublié ?
+            </a>
           </form>
         </div>
 

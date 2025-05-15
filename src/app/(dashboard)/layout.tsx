@@ -1,12 +1,12 @@
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import DashboardLayout from '@/components/DashboardLayout';
+import AuthGuard from '@/components/AuthGuard';
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
   return (
-    <>
-      <Header />
-      {children}
-      <Footer />
-    </>
+    <AuthGuard>
+      <DashboardLayout>
+        {children}
+      </DashboardLayout>
+    </AuthGuard>
   );
 }
