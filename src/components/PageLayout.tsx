@@ -1,7 +1,5 @@
 'use client';
 
-import Header from '@/components/Header';
-
 interface PageLayoutProps {
   title?: string;
   children: React.ReactNode;
@@ -19,7 +17,6 @@ export default function PageLayout({
 
   return (
     <>
-      <Header />
       <Wrapper className={className}>
         {title && <h1 className="text-2xl font-semibold text-[#794082]">{title}</h1>}
         {children}
