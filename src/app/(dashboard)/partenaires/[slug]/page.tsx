@@ -2,6 +2,12 @@
 import { notFound } from 'next/navigation';
 import PartenaireProductPage from '@/components/PartenaireProductPage';
 
+type Props = {
+  params: {
+    slug: string;
+  };
+};
+
 const produits = [
   {
     slug: 'elixir',
@@ -16,10 +22,10 @@ const produits = [
     ],
     ingredients: `Helianthus Annuus Seed Oil*, Coco-Caprylate, Prunus Amygdalus Dulcis Oil*, Cucurbita Maxima Extract*, Tocopherol, Citrus Reticulata Peel Oil*...`
   },
-  // Ajoute d'autres produits ici
+  // d'autres produits...
 ];
 
-export default function PartenaireProductPageWrapper({ params }: { params: { slug: string } }) {
+export default function PartenaireProductPageWrapper({ params }: Props) {
   const produit = produits.find((p) => p.slug === params.slug);
   if (!produit) return notFound();
 
