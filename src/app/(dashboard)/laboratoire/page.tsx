@@ -10,7 +10,7 @@ export default function LeLaboPage() {
 
       <section className="mb-10">
         <p className="text-lg mb-4">
-          Bienvenue dans l’espace professionnel dédié aux praticiens de santé partenaires du Laboratoire Santarel.
+          Bienvenue dans l&#39;espace professionnel dédié aux praticiens de santé partenaires du Laboratoire Santarel.
           Notre mission est de vous accompagner au quotidien dans la prise en charge naturelle et individualisée de vos consultants.
         </p>
         <p className="text-lg">
@@ -22,7 +22,7 @@ export default function LeLaboPage() {
       <section className="mb-10">
         <h2 className="text-xl font-semibold text-[#794082] mb-3">Notre approche</h2>
         <ul className="list-disc list-inside text-lg space-y-2">
-          <li>Une sélection rigoureuse des ingrédients actifs, d'origine naturelle.</li>
+          <li>Une sélection rigoureuse des ingrédients actifs, d&#39;origine naturelle.</li>
           <li>Des formules validées par des experts et adaptées aux besoins du terrain.</li>
           <li>Une traçabilité complète, du sourcing à la livraison au patient.</li>
           <li>Un service client dédié aux professionnels de santé.</li>
