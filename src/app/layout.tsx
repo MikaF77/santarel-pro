@@ -9,6 +9,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="fr">
       <body className="bg-gray-50 text-gray-900">
         <AmplifyProvider>
+          <Header />
           {children}
         </AmplifyProvider>
         <Footer />
