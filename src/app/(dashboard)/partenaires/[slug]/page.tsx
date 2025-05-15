@@ -1,8 +1,8 @@
-// src/app/partenaires/[slug]/page.tsx
+// src/app/(dashboard)/partenaires/[slug]/page.tsx
 import { notFound } from 'next/navigation';
 import PartenaireProductPage from '@/components/PartenaireProductPage';
 
-type Props = {
+type PageProps = {
   params: {
     slug: string;
   };
@@ -22,10 +22,9 @@ const produits = [
     ],
     ingredients: `Helianthus Annuus Seed Oil*, Coco-Caprylate, Prunus Amygdalus Dulcis Oil*, Cucurbita Maxima Extract*, Tocopherol, Citrus Reticulata Peel Oil*...`
   },
-  // d'autres produits...
 ];
 
-export default function PartenaireProductPageWrapper({ params }: Props) {
+export default function PartenaireProduitPage({ params }: PageProps) {
   const produit = produits.find((p) => p.slug === params.slug);
   if (!produit) return notFound();
 
