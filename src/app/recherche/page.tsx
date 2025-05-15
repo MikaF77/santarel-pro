@@ -6,13 +6,24 @@ import Fuse from 'fuse.js';
 import Link from 'next/link';
 import PageLayout from '@/components/PageLayout';
 
-const produits = [
+type Produit = {
+  id: string;
+  name: string;
+  description: string;
+};
+
+type FaqItem = {
+  question: string;
+  href: string;
+};
+
+const produits: Produit[] = [
   { id: 'omega3', name: 'Omega 3 Santarel', description: 'Acides gras essentiels haute pureté.' },
   { id: 'collagene', name: 'Collagène+ Marine', description: 'Beauté de la peau et souplesse articulaire.' },
   { id: 'detoxirel', name: 'Detoxirel', description: 'Formule détox foie à base de plantes et vitamine B8.' },
 ];
 
-const faqs = [
+const faqs: FaqItem[] = [
   { question: 'Comment créer un compte professionnel ?', href: '/faq#1' },
   { question: 'J’ai oublié mon mot de passe, que faire ?', href: '/faq#2' },
   { question: 'Puis-je recommander Santarel à un confrère ?', href: '/faq#3' },
@@ -24,11 +35,11 @@ export default function SearchPage() {
   const router = useRouter();
   const [query, setQuery] = useState('');
 
-  const fuseProduits = useMemo(() => new Fuse(produits, { keys: ['name', 'description'], threshold: 0.4 }), []);
-  const fuseFaqs = useMemo(() => new Fuse(faqs, { keys: ['question'], threshold: 0.4 }), []);
+  const fuseProduits = useMemo(() => new Fuse<Produit>(produits, { keys: ['name', 'description'], threshold: 0.4 }), []);
+  const fuseFaqs = useMemo(() => new Fuse<FaqItem>(faqs, { keys: ['question'], threshold: 0.4 }), []);
 
-  const [resultatsProduits, setProduits] = useState<any[]>([]);
-  const [resultatsFaqs, setFaqs] = useState<any[]>([]);
+  const [resultatsProduits, setProduits] = useState<Produit[]>([]);
+  const [resultatsFaqs, setFaqs] = useState<FaqItem[]>([]);
 
   useEffect(() => {
     const q = params.get('q') || '';
@@ -45,7 +56,7 @@ export default function SearchPage() {
     setFaqs(fuseFaqs.search(query).map((r) => r.item));
   }, [query, fuseProduits, fuseFaqs]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     router.push(`/recherche?q=${encodeURIComponent(query)}`);
   };

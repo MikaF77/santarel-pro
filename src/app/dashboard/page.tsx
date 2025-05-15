@@ -10,11 +10,18 @@ const slides = [
   "🧾 Nouvelle version du bon de commande disponible"
 ];
 
+type UserType = {
+  username: string;
+  attributes?: {
+    email?: string;
+  };
+};
+
 export default function DashboardPage() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error] = useState<string | null>(null); // Supprimé setError car inutilisé
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {

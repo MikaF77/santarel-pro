@@ -3,12 +3,13 @@
 import { useState, useEffect } from "react";
 import { Auth } from "aws-amplify";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function Home() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     Auth.currentAuthenticatedUser()
@@ -16,34 +17,33 @@ export default function Home() {
       .catch(() => {});
   }, [router]);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     try {
       await Auth.signOut({ global: true }).catch(() => {});
       await Auth.signIn(email, password);
       router.push("/dashboard");
-    } catch (err: any) {
-      if (err.name === "UserAlreadyAuthenticatedException") {
+    } catch (err) {
+      if (typeof err === "object" && err !== null && "name" in err && err.name === "UserAlreadyAuthenticatedException") {
         router.push("/dashboard");
       } else {
-        setError(err.message || "Erreur de connexion");
+        setError((err as { message?: string }).message || "Erreur de connexion");
       }
     }
   };
-  
-  const handleFakeLogin = async () => {
-  // ⚠️ Temporaire : stocker un flag de session simulée
-  sessionStorage.setItem("fakeUser", "true");
-  router.push("/dashboard");
-};
+
+  const handleFakeLogin = () => {
+    sessionStorage.setItem("fakeUser", "true");
+    router.push("/dashboard");
+  };
 
   return (
     <main className="min-h-screen bg-white text-gray-800 flex flex-col justify-between font-sans">
       {/* Header avec Logo */}
       <header className="bg-white py-8 shadow-md">
         <div className="container mx-auto flex justify-center">
-          <img src="/logo-santarel.svg" alt="Logo Santarel" className="h-20" />
+          <Image src="/logo-santarel.svg" alt="Logo Santarel" width={160} height={80} />
         </div>
       </header>
 
@@ -76,13 +76,13 @@ export default function Home() {
             >
               Se connecter
             </button>
-			<button
-  type="button"
-  className="w-full border border-[#794082] text-[#794082] py-3 rounded hover:bg-[#f3f0f4] transition"
-  onClick={handleFakeLogin}
->
-  Mode Démo (bypass)
-</button>
+            <button
+              type="button"
+              className="w-full border border-[#794082] text-[#794082] py-3 rounded hover:bg-[#f3f0f4] transition"
+              onClick={handleFakeLogin}
+            >
+              Mode Démo (bypass)
+            </button>
           </form>
         </div>
 
