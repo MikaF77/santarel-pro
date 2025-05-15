@@ -4,6 +4,7 @@ import { Auth } from 'aws-amplify';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useState } from 'react';
+import Link from 'next/link';
 
 export default function Header() {
   const router = useRouter();
@@ -11,7 +12,6 @@ export default function Header() {
 
   const handleLogout = async () => {
     try {
-      sessionStorage.removeItem("fakeUser"); // Nettoyage si en mode démo
       await Auth.signOut({ global: true });
       router.push('/');
     } catch (err) {
@@ -30,7 +30,7 @@ export default function Header() {
       <div className="flex items-center justify-between px-6 py-4 gap-6">
         {/* Logo + titre */}
         <div className="flex items-center gap-4">
-          <a href="/dashboard" className="flex items-center gap-3">
+          <Link href="/dashboard" className="flex items-center gap-3">
             <Image
               src="/logo-santarel.svg"
               alt="Logo Santarel"
@@ -41,7 +41,7 @@ export default function Header() {
             <span className="text-[#794082] font-bold text-lg">
               Espace professionnel du laboratoire Santarel
             </span>
-          </a>
+          </Link>
         </div>
 
         {/* Barre de recherche */}
@@ -63,18 +63,19 @@ export default function Header() {
           <button
             onClick={() => setDropdownOpen((prev) => !prev)}
             className="text-sm text-[#794082] font-semibold hover:underline"
+            aria-expanded={dropdownOpen}
           >
             Mon compte ⌄
           </button>
 
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow text-sm z-50">
-              <a
+              <Link
                 href="/mon-compte"
                 className="block px-4 py-2 hover:bg-gray-100 text-[#794082]"
               >
                 Mon profil
-              </a>
+              </Link>
               <button
                 onClick={handleLogout}
                 className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
@@ -89,11 +90,11 @@ export default function Header() {
       {/* Menu secondaire centré et en gras */}
       <nav className="bg-[#f9f9f9] border-t px-6 py-2">
         <div className="flex flex-wrap justify-center gap-6 text-sm text-[#794082]">
-          <a href="/produits" className="font-semibold hover:underline">LES PRODUITS</a>
-          <a href="/formation" className="font-semibold hover:underline">LE LABO</a>
-          <a href="/activite" className="font-semibold hover:underline">VOS OUTILS</a>
-          <a href="/patients" className="font-semibold hover:underline">SUIVI CONSULTANTS</a>
-          <a href="/partenaires" className="font-semibold hover:underline">AVANTAGES PARTENAIRES</a>
+          <Link href="/produits" className="font-semibold hover:underline">LES PRODUITS</Link>
+          <Link href="/formation" className="font-semibold hover:underline">LE LABO</Link>
+          <Link href="/activite" className="font-semibold hover:underline">VOS OUTILS</Link>
+          <Link href="/patients" className="font-semibold hover:underline">SUIVI CONSULTANTS</Link>
+          <Link href="/partenaires" className="font-semibold hover:underline">AVANTAGES PARTENAIRES</Link>
         </div>
       </nav>
     </header>

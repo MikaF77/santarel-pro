@@ -28,12 +28,12 @@ export default function PartenairesPage() {
 
       {/* PUMP’SKIN */}
       <section id="pumpskin" className="mb-12">
-        <h2 className="text-xl font-semibold text-[#794082] mb-4">Pump'Skin – Cosmétiques naturels signés Dr. ERAUD</h2>
+        <h2 className="text-xl font-semibold text-[#794082] mb-4">Pump&#39;Skin – Cosmétiques naturels signés Dr. ERAUD</h2>
         <div className="grid md:grid-cols-2 gap-6 mb-6">
           <div>
             <Image
               src="/partenaires/pumpskin.jpg"
-              alt="Pump'Skin"
+              alt="Pump&#39;Skin"
               width={600}
               height={400}
               className="rounded shadow"

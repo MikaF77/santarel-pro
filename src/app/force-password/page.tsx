@@ -13,7 +13,7 @@ export default function ForcePasswordPage() {
   const [newPassword, setNewPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [cognitoUser, setCognitoUser] = useState<any>(null);
+  const [cognitoUser, setCognitoUser] = useState<unknown>(null);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,15 +23,19 @@ export default function ForcePasswordPage() {
     try {
       const user = await Auth.signIn(email, password);
 
-      if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
+      if ((user as any).challengeName === 'NEW_PASSWORD_REQUIRED') {
         setCognitoUser(user);
         setStep('new-password');
       } else {
         router.push('/dashboard');
       }
-    } catch (err: any) {
-      console.error('[ForcePassword] ❌', err);
-      setError(err.message || 'Erreur de connexion');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error('[ForcePassword] ❌', err);
+        setError(err.message);
+      } else {
+        setError('Erreur de connexion');
+      }
     } finally {
       setLoading(false);
     }
@@ -45,15 +49,19 @@ export default function ForcePasswordPage() {
     try {
       await Auth.completeNewPassword(cognitoUser, newPassword);
       router.push('/dashboard');
-    } catch (err: any) {
-      console.error('[ForcePassword] ❌', err);
-      setError(err.message || 'Erreur lors du changement de mot de passe');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error('[ForcePassword] ❌', err);
+        setError(err.message);
+      } else {
+        setError('Erreur lors du changement de mot de passe');
+      }
     } finally {
       setLoading(false);
     }
   };
 
-   return (
+  return (
     <main className="min-h-screen flex items-center justify-center bg-white px-4 py-12">
       <div className="w-full max-w-md bg-[#f8f8f8] border border-gray-200 rounded-xl shadow p-6 space-y-6">
         <h1 className="text-2xl font-bold text-[#794082] text-center">🔐 Réinitialisation obligatoire</h1>

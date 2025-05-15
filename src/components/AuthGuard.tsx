@@ -23,7 +23,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
         const user = await Auth.currentAuthenticatedUser();
         console.log('[AuthGuard] Utilisateur connecté :', user);
         setLoading(false);
-      } catch (err) {
+      } catch {
         console.warn('[AuthGuard] Aucune session active. Redirection vers /');
         router.replace('/');
       }
@@ -37,7 +37,10 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="h-screen flex justify-center items-center text-sm text-gray-500">
+      <div
+        role="status"
+        className="h-screen flex justify-center items-center text-sm text-gray-500"
+      >
         Chargement de votre session...
       </div>
     );
