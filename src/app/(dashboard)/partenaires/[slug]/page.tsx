@@ -1,3 +1,5 @@
+// src/app/(dashboard)/partenaires/[slug]/page.tsx
+
 import { notFound } from 'next/navigation';
 import PartenaireProductPage from '@/components/PartenaireProductPage';
 
@@ -30,11 +32,11 @@ const produits = [
   },
 ];
 
+// Ne PAS exporter de type PageProps
 export function generateStaticParams() {
   return produits.map((p) => ({ slug: p.slug }));
 }
 
-// ❌ PAS de typage personnalisé ici (sinon bug)
 export default function Page({ params }: { params: { slug: string } }) {
   const produit = produits.find((p) => p.slug === params.slug);
   if (!produit) return notFound();

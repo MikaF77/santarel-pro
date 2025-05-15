@@ -123,14 +123,14 @@ export default function Header() {
       {mobileMenuOpen && (
         <div className="md:hidden absolute top-[120px] left-0 w-full bg-white border-t shadow z-40 px-6 py-4 space-y-2 text-sm text-[#794082]">
           <Link href="/produits" onClick={() => setMobileMenuOpen(false)} className="block font-semibold hover:underline">LES PRODUITS</Link>
-          <Link href="/formation" onClick={() => setMobileMenuOpen(false)} className="block font-semibold hover:underline">LE LABO</Link>
+          <Link href="/laboratoire" onClick={() => setMobileMenuOpen(false)} className="block font-semibold hover:underline">LE LABO</Link>
 
           {/* Vos outils */}
           <div>
             <span className="block font-semibold">VOS OUTILS</span>
             <div className="pl-4 space-y-1">
               <Link href="/activite" onClick={() => setMobileMenuOpen(false)} className="block hover:underline">Tableau de bord</Link>
-              <Link href="/outils/formations" onClick={() => setMobileMenuOpen(false)} className="block hover:underline">Webinaires / Formations</Link>
+              <Link href="/formation" onClick={() => setMobileMenuOpen(false)} className="block hover:underline">Webinaires / Formations</Link>
             </div>
           </div>
 
@@ -151,7 +151,7 @@ export default function Header() {
       <nav className="bg-[#f9f9f9] border-t px-6 py-2 relative hidden md:block">
         <div className="flex flex-wrap justify-center gap-6 text-sm text-[#794082]">
           <Link href="/produits" className="font-semibold hover:underline">LES PRODUITS</Link>
-          <Link href="/formation" className="font-semibold hover:underline">LE LABO</Link>
+          <Link href="/laboratoire" className="font-semibold hover:underline">LE LABO</Link>
 
           {/* Vos outils */}
           <div className="relative" ref={toolsMenuRef}>
