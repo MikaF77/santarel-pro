@@ -22,7 +22,26 @@ const produits = [
     ],
     ingredients: `Helianthus Annuus Seed Oil*, Coco-Caprylate, Prunus Amygdalus Dulcis Oil*, Cucurbita Maxima Extract*, Tocopherol, Citrus Reticulata Peel Oil*...`
   },
+  {
+    slug: 'cc-cream',
+    title: 'CC Cream',
+    image: '/partenaires/cccream.jpg',
+    prix: '19,80 € (au lieu de 22,00 €)',
+    description: 'Crème teintée effet bonne mine immédiat, soin et correction en un geste.',
+    details: [
+      'Teinte universelle adaptée',
+      'Texture légère et non grasse',
+      'Action hydratante et anti-rougeurs',
+    ],
+    ingredients: `Aqua, Glycerin, Titanium Dioxide, Cera Alba*, Helianthus Annuus Seed Oil*, CI 77491, Parfum...`
+  },
 ];
+
+export async function generateStaticParams() {
+  return produits.map((p) => ({
+    slug: p.slug,
+  }));
+}
 
 export default function PartenaireProduitPage({ params }: PageProps) {
   const produit = produits.find((p) => p.slug === params.slug);
