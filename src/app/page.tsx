@@ -1,103 +1,134 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useEffect } from "react";
+import { Auth } from "aws-amplify";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  useEffect(() => {
+    Auth.currentAuthenticatedUser()
+      .then(() => router.replace("/dashboard"))
+      .catch(() => {});
+  }, [router]);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    try {
+      await Auth.signOut({ global: true }).catch(() => {});
+      await Auth.signIn(email, password);
+      router.push("/dashboard");
+    } catch (err: any) {
+      if (err.name === "UserAlreadyAuthenticatedException") {
+        router.push("/dashboard");
+      } else {
+        setError(err.message || "Erreur de connexion");
+      }
+    }
+  };
+  
+  const handleFakeLogin = async () => {
+  // ⚠️ Temporaire : stocker un flag de session simulée
+  sessionStorage.setItem("fakeUser", "true");
+  router.push("/dashboard");
+};
+
+  return (
+    <main className="min-h-screen bg-white text-gray-800 flex flex-col justify-between font-sans">
+      {/* Header avec Logo */}
+      <header className="bg-white py-8 shadow-md">
+        <div className="container mx-auto flex justify-center">
+          <img src="/logo-santarel.svg" alt="Logo Santarel" className="h-20" />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </header>
+
+      {/* Bloc principal */}
+      <section className="container mx-auto px-4 py-12 flex flex-col lg:flex-row justify-center items-start gap-10">
+        {/* Connexion */}
+        <div className="w-full lg:w-1/2 bg-[#f8f8f8] border border-gray-200 rounded-xl shadow p-8">
+          <h2 className="text-2xl font-bold text-[#794082] mb-6 text-center">Connexion</h2>
+          <form onSubmit={handleLogin} className="space-y-5">
+            <input
+              type="email"
+              placeholder="Adresse email"
+              className="w-full p-3 rounded border border-gray-300 focus:outline-[#794082]"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Mot de passe"
+              className="w-full p-3 rounded border border-gray-300 focus:outline-[#794082]"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            {error && <p className="text-red-600 text-sm text-center">{error}</p>}
+            <button
+              type="submit"
+              className="w-full bg-[#794082] text-white py-3 rounded hover:bg-[#66336e] transition"
+            >
+              Se connecter
+            </button>
+			<button
+  type="button"
+  className="w-full border border-[#794082] text-[#794082] py-3 rounded hover:bg-[#f3f0f4] transition"
+  onClick={handleFakeLogin}
+>
+  Mode Démo (bypass)
+</button>
+          </form>
+        </div>
+
+        {/* Inscription */}
+        <div className="w-full lg:w-1/2 bg-[#f8f8f8] border border-gray-200 rounded-xl shadow p-8">
+          <h2 className="text-2xl font-bold text-[#794082] mb-6 text-center">Inscription</h2>
+          <form action="/inscription" method="GET" className="space-y-5">
+            <input
+              type="text"
+              placeholder="Nom complet"
+              className="w-full p-3 rounded border border-gray-300 focus:outline-[#794082]"
+            />
+            <input
+              type="email"
+              placeholder="Email professionnel"
+              className="w-full p-3 rounded border border-gray-300 focus:outline-[#794082]"
+            />
+            <button className="w-full bg-[#575756] text-white py-3 rounded hover:bg-[#3f3f3f] transition">
+              Créer mon compte
+            </button>
+          </form>
+        </div>
+      </section>
+
+      {/* Présentation */}
+      <section className="bg-[#f3f0f4] py-14 px-6 text-center">
+        <div className="max-w-4xl mx-auto space-y-4">
+          <h3 className="text-3xl font-semibold text-[#794082]">Bienvenue sur l’espace pro Santarel</h3>
+          <p className="text-lg text-[#575756]">
+            Le Laboratoire Santarel accompagne les professionnels de santé avec des solutions efficaces et naturelles.
+            Accédez à vos produits, formations, patients et commandes via une interface dédiée et sécurisée.
+          </p>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-[#575756] text-white py-6">
+        <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
+          <p>© 2025 Laboratoire Santarel – Tous droits réservés</p>
+          <div className="flex gap-6">
+            <a href="/contact" className="hover:underline">Contact</a>
+            <a href="/mentions-legales" className="hover:underline">Mentions légales</a>
+            <a href="/politique-confidentialite" className="hover:underline">Confidentialité</a>
+          </div>
+        </div>
       </footer>
-    </div>
+    </main>
   );
 }

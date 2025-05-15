@@ -1,36 +1,131 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌿 Santarel – Site Professionnel
 
-## Getting Started
+Ce dépôt contient le code du **site professionnel du Laboratoire Santarel**, destiné aux praticiens de santé partenaires.  
+Ce portail permet aux professionnels de se connecter, consulter leurs mouvements de compte, l'historique de leurs patients, les produits, les formations et gérer leurs commandes.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 Fonctionnalités principales
+
+- ✅ Connexion sécurisée via AWS Cognito
+- 📊 Tableau de bord du praticien
+- 🧾 Mouvements de compte (factures, règlements, avoirs)
+- 👥 Historique clients et commandes
+- 🧴 Produits disponibles avec tarifs pro
+- 🎓 Webinaires & Formations en ligne
+- 📦 Commandes pro (à venir)
+- 🧍 Profil utilisateur et préférences
+- 🔒 Déconnexion globale (`signOut({ global: true })`)
+
+---
+
+## 🧱 Architecture technique
+
+- **Frontend** : Next.js 15.3.1 (App Router) + React 19 + Tailwind CSS  
+- **Auth** : AWS Cognito (User Pool) + `aws-amplify@5.x`  
+- **Backend** : API REST (connectée à HyperFileSQL via WinDev)  
+- **Stockage fichiers (images)** : AWS S3  
+- **Déploiement** : Vercel (ou hébergeur interne)
+
+---
+
+## 📂 Structure du projet
+
+```
+santarel-pro/
+├── src/
+│   ├── app/
+│   │   ├── page.tsx               → Page de connexion (accueil)
+│   │   ├── dashboard/             → Dashboard protégé
+│   │   ├── activite/            → Mouvements du compte
+│   │   ├── patients/               → Historique des patients
+│   │   ├── produits/              → Produits disponibles
+│   │   ├── formation/            → Webinaires & replays
+│   │   ├── contact/               → Formulaire de contact
+│   │   └── mon-compte/            → Profil utilisateur
+│   ├── components/
+│   │   └── AmplifyProvider.tsx    → Wrapper client pour `Amplify.configure(...)`
+│   │   ├── DashboardLayout.tsx
+│   │   ├── Header.tsx
+│   │   ├── PageLayout.tsx
+│   ├── lib/
+│   │   └── amplify-client.ts      → (optionnel) initialisation Amplify
+│   ├── aws-exports.ts            → Configuration Cognito / Amplify
+│   └── styles/
+│       └── globals.css
+├── public/
+├── package.json
+└── tsconfig.json
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔧 Installation & Configuration requise
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Créer un User Pool** dans la région `eu-west-3`  
+2. **Créer un App Client** (sans secret) et **cochez** au minimum :
+   - `ALLOW_USER_SRP_AUTH`
+   - **(optionnel)** `ALLOW_USER_PASSWORD_AUTH` si vous souhaitez le flux mot de passe simple  
+   - `ALLOW_REFRESH_TOKEN_AUTH`
+3. **Mettre à jour** `src/aws-exports.ts` **pour v5** (pas de bloc `Cognito` imbriqué) :
 
-## Learn More
+   ```ts
+   // src/aws-exports.ts
+   const awsconfig = {
+     Auth: {
+       region: 'eu-west-3',
+       userPoolId: 'eu-west-3_ptH9upn19',
+       userPoolWebClientId: '4vfbgahm30kjk72u071n3sj1kf',
+       // facultatif : 'USER_SRP_AUTH' ou 'USER_PASSWORD_AUTH'
+       authenticationFlowType: 'USER_PASSWORD_AUTH',
+     }
+   };
+   export default awsconfig;
+   ```
+4. **Installer** les dépendances :
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   npm install aws-amplify@^5.2.7 next@15 react@19 react-dom@19 tailwindcss postcss autoprefixer
+   ```
+5. **Configurer Amplify** au démarrage client :
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```ts
+   // src/components/AmplifyProvider.tsx
+   'use client';
+   import { Amplify } from 'aws-amplify';
+   import awsconfig from '../aws-exports';
+   Amplify.configure(awsconfig);
+   export default function AmplifyProvider({ children }) { return <>{children}</>; }
+   ```
+6. **Démarrer** le serveur de développement :
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```bash
+   npm run dev
+   ```
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🧩 Composants clés
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Composant         | Rôle                                            |
+|-------------------|--------------------------------------------------|
+| `Header.tsx`      | Affiche le logo, le titre, le menu, le compte   |
+| `PageLayout.tsx`  | Conteneur commun à toutes les pages pros        |
+| `AmplifyProvider` | Initialise Amplify côté client                  |
+
+---
+
+## 📦 Versions recommandées
+
+- `next`: 15.3.1  
+- `aws-amplify`: ^5.2.7  
+- `tailwindcss`: ^4.x  
+- `typescript`: ^5.x  
+
+---
+
+## 🔐 Accès pro
+
+> Ce site est réservé aux praticiens de santé disposant d’un compte partenaire validé par l’équipe Santarel.
+
+Pour toute question : [contact@santarel.fr](mailto:contact@santarel.fr)
