@@ -1,4 +1,3 @@
-// app/produits/[slug]/page.tsx
 import { supabase } from '@/lib/supabaseClient';
 import { notFound } from 'next/navigation';
 
@@ -27,3 +26,5 @@ export default async function ProduitPage({ params }: { params: { slug: string }
     </div>
   );
 }
+
+export const dynamic = 'force-dynamic';
