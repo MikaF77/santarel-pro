@@ -12,6 +12,7 @@ type Produit = {
   conditionnement: string | null;
   prix: number | null;
   url_image: string | null;
+  slug: string | null;
 };
 
 export default function ProduitsPage() {
